@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Ajouter une charge{% else %}Add cost{% endif %}{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-receipt text-danger"></i>
+  {% if LANGUAGE_CODE == 'fr' %}Ajouter une charge{% else %}Add a cost{% endif %}
+</h4>
+<div class="card" style="max-width:600px">
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Date{% else %}Date{% endif %}</label>
+        <input type="date" name="date" class="form-control" value="{{ today }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Catégorie{% else %}Category{% endif %}</label>
+        <select name="categorie" class="form-select" required>
+          {% for val, label in categories %}
+          <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Description{% else %}Description{% endif %}</label>
+        <input type="text" name="description" class="form-control" required
+          placeholder="{% if LANGUAGE_CODE == 'fr' %}Ex: Engrais NPK 20kg{% else %}Ex: NPK fertilizer 20kg{% endif %}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Montant (TND){% else %}Amount (TND){% endif %}</label>
+        <input type="number" name="montant" step="0.001" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Parcelle (optionnel){% else %}Parcel (optional){% endif %}</label>
+        <select name="parcelle" class="form-select">
+          <option value="">—</option>
+          {% for p in parcelles %}<option value="{{ p.pk }}">{{ p.nom }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Fournisseur{% else %}Supplier{% endif %}</label>
+        <input type="text" name="fournisseur" class="form-control">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Notes</label>
+        <textarea name="notes" class="form-control" rows="2"></textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-danger flex-fill">
+          <i class="bi bi-check-lg"></i> {% if LANGUAGE_CODE == 'fr' %}Enregistrer{% else %}Save{% endif %}
+        </button>
+        <a href="/couts/" class="btn btn-outline-secondary flex-fill">
+          {% if LANGUAGE_CODE == 'fr' %}Annuler{% else %}Cancel{% endif %}
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

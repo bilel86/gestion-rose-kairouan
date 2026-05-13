@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Récoltes{% else %}Harvests{% endif %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4><i class="bi bi-flower1 text-success"></i> {% if LANGUAGE_CODE == 'fr' %}Récoltes{% else %}Harvests{% endif %}</h4>
+  <a href="/production/ajouter/" class="btn btn-success"><i class="bi bi-plus"></i> {% if LANGUAGE_CODE == 'fr' %}Saisir récolte{% else %}Log harvest{% endif %}</a>
+</div>
+<div class="card mb-3"><div class="card-body">
+  <strong>{% if LANGUAGE_CODE == 'fr' %}Total récolté{% else %}Total harvested{% endif %} : </strong>
+  <span class="text-success fw-bold fs-5">{{ total_kg }} kg</span>
+</div></div>
+<div class="table-responsive">
+<table class="table table-hover table-sm">
+  <thead class="table-success">
+    <tr>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Date{% else %}Date{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Parcelle{% else %}Parcel{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Quantité (kg){% else %}Quantity (kg){% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Qualité{% else %}Quality{% endif %}</th>
+      <th>Notes</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in recoltes %}
+    <tr>
+      <td>{{ r.date }}</td>
+      <td>{{ r.parcelle|default:"—" }}</td>
+      <td class="fw-bold text-success">{{ r.quantite_kg }}</td>
+      <td><span class="badge bg-success">{{ r.get_qualite_display }}</span></td>
+      <td>{{ r.notes }}</td>
+      <td>
+        <a href="/production/{{ r.pk }}/supprimer/" class="btn btn-sm btn-outline-danger"
+           onclick="return confirm('{% if LANGUAGE_CODE == "fr" %}Supprimer ?{% else %}Delete?{% endif %}')">
+          <i class="bi bi-trash"></i>
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">{% if LANGUAGE_CODE == 'fr' %}Aucune récolte enregistrée{% else %}No harvests recorded{% endif %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

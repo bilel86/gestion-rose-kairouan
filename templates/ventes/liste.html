@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Ventes{% else %}Sales{% endif %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4><i class="bi bi-cash-coin text-danger"></i> {% if LANGUAGE_CODE == 'fr' %}Ventes{% else %}Sales{% endif %}</h4>
+  <a href="/ventes/ajouter/" class="btn btn-danger"><i class="bi bi-plus"></i> {% if LANGUAGE_CODE == 'fr' %}Nouvelle vente{% else %}New sale{% endif %}</a>
+</div>
+<div class="card mb-3"><div class="card-body">
+  <strong>{% if LANGUAGE_CODE == 'fr' %}CA Total{% else %}Total Revenue{% endif %} : </strong>
+  <span class="text-danger fw-bold fs-5">{{ ca_total }} TND</span>
+</div></div>
+<div class="table-responsive">
+<table class="table table-hover table-sm">
+  <thead class="table-danger">
+    <tr>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Date{% else %}Date{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Quantité (kg){% else %}Quantity (kg){% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Prix/kg (TND){% else %}Price/kg (TND){% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Total (TND){% else %}Total (TND){% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Acheteur{% else %}Buyer{% endif %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for v in ventes %}
+    <tr>
+      <td>{{ v.date }}</td>
+      <td>{{ v.quantite_kg }}</td>
+      <td>{{ v.prix_kg }}</td>
+      <td class="fw-bold text-danger">{{ v.ca_total }}</td>
+      <td>{{ v.acheteur }}</td>
+      <td>
+        <a href="/ventes/{{ v.pk }}/supprimer/" class="btn btn-sm btn-outline-danger"
+           onclick="return confirm('{% if LANGUAGE_CODE == "fr" %}Supprimer ?{% else %}Delete?{% endif %}')">
+          <i class="bi bi-trash"></i>
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">{% if LANGUAGE_CODE == 'fr' %}Aucune vente enregistrée{% else %}No sales recorded{% endif %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

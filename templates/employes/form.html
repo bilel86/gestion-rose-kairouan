@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Ouvrier{% else %}Worker{% endif %}{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-person-plus text-primary"></i>
+  {% if employe %}{% if LANGUAGE_CODE == 'fr' %}Modifier ouvrier{% else %}Edit worker{% endif %}
+  {% else %}{% if LANGUAGE_CODE == 'fr' %}Nouvel ouvrier{% else %}New worker{% endif %}{% endif %}
+</h4>
+<div class="card" style="max-width:550px">
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      <div class="row g-3">
+        <div class="col-6">
+          <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Prénom{% else %}First name{% endif %}</label>
+          <input type="text" name="prenom" class="form-control" value="{{ employe.prenom|default:'' }}" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Nom{% else %}Last name{% endif %}</label>
+          <input type="text" name="nom" class="form-control" value="{{ employe.nom|default:'' }}" required>
+        </div>
+        <div class="col-6">
+          <label class="form-label">CIN</label>
+          <input type="text" name="cin" class="form-control" value="{{ employe.cin|default:'' }}">
+        </div>
+        <div class="col-6">
+          <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Téléphone{% else %}Phone{% endif %}</label>
+          <input type="text" name="telephone" class="form-control" value="{{ employe.telephone|default:'' }}">
+        </div>
+        <div class="col-6">
+          <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Village{% else %}Village{% endif %}</label>
+          <input type="text" name="village" class="form-control" value="{{ employe.village|default:'' }}">
+        </div>
+        <div class="col-6">
+          <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Tarif/jour (TND){% else %}Daily rate (TND){% endif %}</label>
+          <input type="number" name="tarif_jour" step="0.5" class="form-control" value="{{ employe.tarif_jour|default:30 }}" required>
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-primary flex-fill">
+            <i class="bi bi-check-lg"></i> {% if LANGUAGE_CODE == 'fr' %}Enregistrer{% else %}Save{% endif %}
+          </button>
+          <a href="/employes/" class="btn btn-outline-secondary flex-fill">
+            {% if LANGUAGE_CODE == 'fr' %}Annuler{% else %}Cancel{% endif %}
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

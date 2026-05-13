@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Terrain{% else %}Land{% endif %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4><i class="bi bi-geo-alt text-danger"></i>
+    {% if LANGUAGE_CODE == 'fr' %}Terrain — Total : {{ total_ha }} Ha{% else %}Land — Total: {{ total_ha }} Ha{% endif %}
+  </h4>
+  <a href="/terrain/ajouter/" class="btn btn-danger"><i class="bi bi-plus"></i> {% if LANGUAGE_CODE == 'fr' %}Ajouter parcelle{% else %}Add parcel{% endif %}</a>
+</div>
+<div class="row g-3">
+  {% for p in parcelles %}
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between">
+        <span class="fw-bold">{{ p.nom }}</span>
+        <span class="badge {% if p.statut == 'active' %}bg-success{% elif p.statut == 'repos' %}bg-secondary{% elif p.statut == 'traitement' %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+          {{ p.get_statut_display }}
+        </span>
+      </div>
+      <div class="card-body">
+        <div class="row text-center g-2 mb-2">
+          <div class="col-4">
+            <div class="text-muted small">Ha</div>
+            <div class="fw-bold text-danger">{{ p.superficie_ha }}</div>
+          </div>
+          <div class="col-4">
+            <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Pieds{% else %}Plants{% endif %}</div>
+            <div class="fw-bold">{{ p.nb_pieds }}</div>
+          </div>
+          <div class="col-4">
+            <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Âge{% else %}Age{% endif %}</div>
+            <div class="fw-bold">{{ p.age_ans }} ans</div>
+          </div>
+        </div>
+        {% if p.notes %}<p class="text-muted small mb-0">{{ p.notes }}</p>{% endif %}
+      </div>
+      <div class="card-footer d-flex gap-2">
+        <a href="/terrain/{{ p.pk }}/modifier/" class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-pencil"></i></a>
+        <a href="/terrain/{{ p.pk }}/supprimer/" class="btn btn-sm btn-outline-danger flex-fill"
+           onclick="return confirm('{% if LANGUAGE_CODE == "fr" %}Supprimer ?{% else %}Delete?{% endif %}')">
+          <i class="bi bi-trash"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12"><p class="text-muted text-center">{% if LANGUAGE_CODE == 'fr' %}Aucune parcelle. Ajoutez vos 7 Ha.{% else %}No parcels yet. Add your 7 Ha.{% endif %}</p></div>
+  {% endfor %}
+</div>
+{% endblock %}

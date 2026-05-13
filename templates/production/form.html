@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Saisir récolte{% else %}Log harvest{% endif %}{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-flower1 text-success"></i>
+  {% if LANGUAGE_CODE == 'fr' %}Saisir une récolte{% else %}Log a harvest{% endif %}
+</h4>
+<div class="card" style="max-width:550px">
+  <div class="card-body">
+    <form method="post">{% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Date{% else %}Date{% endif %}</label>
+        <input type="date" name="date" class="form-control" value="{{ today }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Parcelle{% else %}Parcel{% endif %}</label>
+        <select name="parcelle" class="form-select">
+          <option value="">{% if LANGUAGE_CODE == 'fr' %}Toutes les parcelles{% else %}All parcels{% endif %}</option>
+          {% for p in parcelles %}<option value="{{ p.pk }}">{{ p.nom }} ({{ p.superficie_ha }} Ha)</option>{% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Quantité récoltée (kg){% else %}Harvested quantity (kg){% endif %}</label>
+        <input type="number" name="quantite_kg" step="0.1" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{% if LANGUAGE_CODE == 'fr' %}Qualité{% else %}Quality{% endif %}</label>
+        <select name="qualite" class="form-select">
+          {% for val, label in qualites %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Notes</label>
+        <textarea name="notes" class="form-control" rows="2"></textarea>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success flex-fill">
+          <i class="bi bi-check-lg"></i> {% if LANGUAGE_CODE == 'fr' %}Enregistrer{% else %}Save{% endif %}
+        </button>
+        <a href="/production/" class="btn btn-outline-secondary flex-fill">
+          {% if LANGUAGE_CODE == 'fr' %}Annuler{% else %}Cancel{% endif %}
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

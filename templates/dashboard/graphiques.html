@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Graphiques{% else %}Charts{% endif %}{% endblock %}
+{% block content %}
+<h4 class="mb-4"><i class="bi bi-bar-chart-line text-danger"></i>
+  {% if LANGUAGE_CODE == 'fr' %}Graphiques — Analyse {{ annee }}{% else %}Charts — Analysis {{ annee }}{% endif %}
+</h4>
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header fw-semibold">
+        {% if LANGUAGE_CODE == 'fr' %}📈 CA mensuel — Comparaison 3 années{% else %}📈 Monthly Revenue — 3-year comparison{% endif %}
+      </div>
+      <div class="card-body"><canvas id="chartCA" height="80"></canvas></div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header fw-semibold">
+        {% if LANGUAGE_CODE == 'fr' %}🌹 Kg récoltés par mois{% else %}🌹 Kg harvested per month{% endif %}
+      </div>
+      <div class="card-body"><canvas id="chartKg" height="160"></canvas></div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-header fw-semibold">
+        {% if LANGUAGE_CODE == 'fr' %}💸 Répartition des charges {{ annee }}{% else %}💸 Cost breakdown {{ annee }}{% endif %}
+      </div>
+      <div class="card-body"><canvas id="chartCat" height="160"></canvas></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+new Chart(document.getElementById('chartCA'), {
+  type: 'line',
+  data: { labels: {{ mois_labels|safe }}, datasets: {{ datasets_ca|safe }} },
+  options: { responsive: true, plugins: { legend: { position: 'top' } } }
+});
+new Chart(document.getElementById('chartKg'), {
+  type: 'bar',
+  data: { labels: {{ mois_labels|safe }}, datasets: {{ datasets_kg|safe }} },
+  options: { responsive: true }
+});
+new Chart(document.getElementById('chartCat'), {
+  type: 'doughnut',
+  data: { labels: {{ cat_labels|safe }},
+    datasets: [{ data: {{ cat_data|safe }},
+      backgroundColor: ['#c0392b','#e67e22','#3498db','#27ae60','#9b59b6','#1abc9c','#95a5a6'] }] },
+  options: { responsive: true }
+});
+</script>
+{% endblock %}

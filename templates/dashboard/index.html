@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Rose Kairouan{% endblock %}
+{% block content %}
+
+<h4 class="mb-4">
+  <i class="bi bi-speedometer2 text-danger"></i>
+  {% if LANGUAGE_CODE == 'fr' %}Tableau de bord — Saison {{ annee }}{% else %}Dashboard — Season {{ annee }}{% endif %}
+</h4>
+
+<!-- Cartes stats -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card card-stat h-100">
+      <div class="card-body">
+        <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Chiffre d'affaires{% else %}Revenue{% endif %}</div>
+        <div class="fs-4 fw-bold text-danger">{{ ca_total }} <small class="fs-6">TND</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card card-stat h-100">
+      <div class="card-body">
+        <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Charges{% else %}Costs{% endif %}</div>
+        <div class="fs-4 fw-bold text-warning">{{ charges_total }} <small class="fs-6">TND</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card card-stat h-100">
+      <div class="card-body">
+        <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Bénéfice net{% else %}Net profit{% endif %}</div>
+        <div class="fs-4 fw-bold {% if benefice >= 0 %}text-success{% else %}text-danger{% endif %}">
+          {{ benefice }} <small class="fs-6">TND</small>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card card-stat h-100">
+      <div class="card-body">
+        <div class="text-muted small">{% if LANGUAGE_CODE == 'fr' %}Récolte totale{% else %}Total harvest{% endif %}</div>
+        <div class="fs-4 fw-bold text-success">{{ kg_recoltes }} <small class="fs-6">kg</small></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Graphe CA mensuel multi-années -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-md-8">
+    <div class="card">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-bar-chart text-danger"></i>
+        {% if LANGUAGE_CODE == 'fr' %}CA mensuel — Comparaison par année{% else %}Monthly Revenue — Year Comparison{% endif %}
+      </div>
+      <div class="card-body"><canvas id="chartCA" height="120"></canvas></div>
+    </div>
+  </div>
+  <div class="col-12 col-md-4">
+    <div class="card">
+      <div class="card-header fw-semibold">
+        <i class="bi bi-graph-up text-danger"></i>
+        {% if LANGUAGE_CODE == 'fr' %}Prix/kg ce jour{% else %}Daily price/kg{% endif %}
+      </div>
+      <div class="card-body"><canvas id="chartPrix" height="200"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- Raccourcis -->
+<div class="row g-3">
+  <div class="col-6 col-md-3">
+    <a href="/ventes/ajouter/" class="btn btn-danger w-100 py-3">
+      <i class="bi bi-plus-circle fs-4 d-block"></i>
+      {% if LANGUAGE_CODE == 'fr' %}Nouvelle vente{% else %}New sale{% endif %}
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="/production/ajouter/" class="btn btn-success w-100 py-3">
+      <i class="bi bi-flower1 fs-4 d-block"></i>
+      {% if LANGUAGE_CODE == 'fr' %}Saisir récolte{% else %}Log harvest{% endif %}
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="/employes/pointage/" class="btn btn-primary w-100 py-3">
+      <i class="bi bi-person-check fs-4 d-block"></i>
+      {% if LANGUAGE_CODE == 'fr' %}Pointage ouvriers{% else %}Worker check-in{% endif %}
+    </a>
+  </div>
+  <div class="col-6 col-md-3">
+    <a href="/couts/ajouter/" class="btn btn-warning w-100 py-3">
+      <i class="bi bi-receipt fs-4 d-block"></i>
+      {% if LANGUAGE_CODE == 'fr' %}Ajouter charge{% else %}Add cost{% endif %}
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const caCtx = document.getElementById('chartCA');
+new Chart(caCtx, {
+  type: 'line',
+  data: { labels: {{ chart_ca_labels|safe }}, datasets: {{ chart_ca_datasets|safe }} },
+  options: { responsive: true, plugins: { legend: { position: 'top' } } }
+});
+
+const prixCtx = document.getElementById('chartPrix');
+new Chart(prixCtx, {
+  type: 'line',
+  data: {
+    labels: {{ prix_labels|safe }},
+    datasets: [{ label: 'TND/kg', data: {{ prix_data|safe }},
+      borderColor: '#c0392b', backgroundColor: '#fadbd8', tension: 0.4, fill: true }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}

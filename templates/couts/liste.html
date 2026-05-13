@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'fr' %}Charges{% else %}Costs{% endif %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4><i class="bi bi-receipt text-danger"></i> {% if LANGUAGE_CODE == 'fr' %}Charges{% else %}Costs{% endif %}</h4>
+  <a href="/couts/ajouter/" class="btn btn-danger"><i class="bi bi-plus"></i> {% if LANGUAGE_CODE == 'fr' %}Ajouter{% else %}Add{% endif %}</a>
+</div>
+<div class="card mb-3"><div class="card-body">
+  <strong>{% if LANGUAGE_CODE == 'fr' %}Total charges{% else %}Total costs{% endif %} : </strong>
+  <span class="text-warning fw-bold fs-5">{{ total }} TND</span>
+</div></div>
+<div class="row g-2 mb-3">
+  {% for cat, montant in par_cat.items %}
+  <div class="col-6 col-md-3">
+    <div class="card text-center py-2">
+      <div class="small text-muted">{{ cat }}</div>
+      <div class="fw-bold">{{ montant|floatformat:2 }} TND</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="table-responsive">
+<table class="table table-hover table-sm">
+  <thead class="table-warning">
+    <tr>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Date{% else %}Date{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Catégorie{% else %}Category{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Description{% else %}Description{% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Montant (TND){% else %}Amount (TND){% endif %}</th>
+      <th>{% if LANGUAGE_CODE == 'fr' %}Parcelle{% else %}Parcel{% endif %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in couts %}
+    <tr>
+      <td>{{ c.date }}</td>
+      <td><span class="badge bg-warning text-dark">{{ c.get_categorie_display }}</span></td>
+      <td>{{ c.description }}</td>
+      <td class="fw-bold">{{ c.montant }}</td>
+      <td>{{ c.parcelle|default:"—" }}</td>
+      <td>
+        <a href="/couts/{{ c.pk }}/supprimer/" class="btn btn-sm btn-outline-danger"
+           onclick="return confirm('{% if LANGUAGE_CODE == "fr" %}Supprimer ?{% else %}Delete?{% endif %}')">
+          <i class="bi bi-trash"></i>
+        </a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6" class="text-center text-muted">{% if LANGUAGE_CODE == 'fr' %}Aucune charge enregistrée{% else %}No costs recorded{% endif %}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}
