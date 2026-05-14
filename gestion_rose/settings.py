@@ -1,13 +1,18 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-f)ao1oc*x_9zhg8v1m+7bqkr7-voddg53@(m1v$$xt#if^338-'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-f)ao1oc*x_9zhg8v1m+7bqkr7-voddg53@(m1v$$xt#if^338-')
 
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    f"https://{h}" for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -56,12 +61,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gestion_rose.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Base de données — PostgreSQL en production, SQLite en local
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
